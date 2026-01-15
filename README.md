@@ -3,6 +3,7 @@ Unity Universal Render Pipeline (URP) 기반의 커스텀 셰이더 라이브러
 📋 목차
 
 주요 기능
+아키텍처
 셰이더 목록
 설치 방법
 사용 예시
@@ -51,6 +52,95 @@ Cone (최대 4개)
 커스텀 그림자 시스템
 투명도 지원: SrcAlpha OneMinusSrcAlpha 블렌딩
 깊이 전용 패스: 최적화된 렌더링
+
+📐 아키텍처
+
+---
+
+graph TB
+    subgraph "Unity Rendering Pipeline"
+        Camera[Camera]
+        Light[Light Sources]
+    end
+    
+    subgraph "Shader System"
+        UnitGeo[UnitGeometry Shader<br/>LOD 300]
+        UnitTrans[UnitTransparent Shader]
+        Outline[Outline Shader]
+        Shadow[Shadow Shader]
+        Dissolve[Dissolve Shaders]
+    end
+    
+    subgraph "Texture Inputs"
+        MainTex[Main Texture]
+        MaskTex[Mask Texture]
+        EmissiveTex[Emissive Texture]
+        NormalTex[Normal Map]
+    end
+    
+    subgraph "Custom Light System"
+        DirLight[Directional Light x1]
+        PointLight[Point Lights x4]
+        CelShading[Cel Shading<br/>MidPoint + Softness]
+        Specular[Specular<br/>Mask Based]
+    end
+    
+    subgraph "Advanced Dissolve"
+        Mask[Dissolve Masks]
+        Plane[Plane x4]
+        Sphere[Sphere x4]
+        Box[Box x4]
+        Cylinder[Cylinder x4]
+        Cone[Cone x4]
+    end
+    
+    subgraph "Output Passes"
+        ColorPass[Color Pass]
+        DepthPass[Depth Only Pass]
+        StencilPass[Stencil Pass]
+    end
+    
+    Camera --> UnitGeo
+    Light --> CustomLight
+    
+    MainTex --> UnitGeo
+    MaskTex --> UnitGeo
+    EmissiveTex --> UnitGeo
+    NormalTex --> UnitGeo
+    
+    DirLight --> CelShading
+    PointLight --> CelShading
+    CelShading --> UnitGeo
+    Specular --> UnitGeo
+    
+    UnitGeo --> Outline
+    UnitGeo --> Shadow
+    UnitGeo --> Dissolve
+    
+    Mask --> Plane
+    Mask --> Sphere
+    Mask --> Box
+    Mask --> Cylinder
+    Mask --> Cone
+    
+    Plane --> Dissolve
+    Sphere --> Dissolve
+    
+    UnitGeo --> ColorPass
+    UnitGeo --> DepthPass
+    Outline --> StencilPass
+    
+    ColorPass --> FrameBuffer[Frame Buffer]
+    DepthPass --> FrameBuffer
+    StencilPass --> FrameBuffer
+    
+    style UnitGeo fill:#4a90e2
+    style CustomLight fill:#f39c12
+    style Dissolve fill:#e74c3c
+    style FrameBuffer fill:#2ecc71
+
+
+---
 
 📂 셰이더 목록
 Unit Shaders
