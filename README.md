@@ -55,6 +55,8 @@ Cone (최대 4개)
 
 ## 📐 Rendering Pipeline Architecture
 
+---
+```mermaid
 graph TB
     subgraph "Unity Rendering Pipeline"
         Camera[Camera]
@@ -136,7 +138,7 @@ graph TB
     style CustomLight fill:#f39c12
     style Dissolve fill:#e74c3c
     style FrameBuffer fill:#2ecc71
-
+```
 
 ### 주요 컴포넌트
 
@@ -144,6 +146,7 @@ graph TB
 - **Cel Shading**: MidPoint, Softness 파라미터로 조절
 - **Dissolve System**: 6가지 마스크 타입 (Plane, Sphere, Box, Cylinder, Cone, Axis)
 - **Multi-pass**: Color, Depth, Stencil 분리 렌더링
+---
 
 
 📂 셰이더 목록
