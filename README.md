@@ -53,9 +53,7 @@ Cone (최대 4개)
 투명도 지원: SrcAlpha OneMinusSrcAlpha 블렌딩
 깊이 전용 패스: 최적화된 렌더링
 
-📐 아키텍처
-
----
+## 📐 Rendering Pipeline Architecture
 
 graph TB
     subgraph "Unity Rendering Pipeline"
@@ -140,7 +138,13 @@ graph TB
     style FrameBuffer fill:#2ecc71
 
 
----
+### 주요 컴포넌트
+
+- **Custom Light System**: Directional 1개 + Point 4개
+- **Cel Shading**: MidPoint, Softness 파라미터로 조절
+- **Dissolve System**: 6가지 마스크 타입 (Plane, Sphere, Box, Cylinder, Cone, Axis)
+- **Multi-pass**: Color, Depth, Stencil 분리 렌더링
+
 
 📂 셰이더 목록
 Unit Shaders
